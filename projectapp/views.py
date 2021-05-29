@@ -22,6 +22,7 @@ from django.contrib.auth import login as loginn
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
+from django.utils.decorators import method_decorator
 
 
 class CandidateCreate(CreateAPIView):
@@ -35,18 +36,17 @@ class CandidateCreate(CreateAPIView):
     def perform_create(self, serializer):
         serializer.save()
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class ScoreCreate(CreateAPIView):
 
-    def create(self, request, *args, **kwargs):
+    def post(self, request,*args, **kwargs):
         serializer = ScoreSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response({'message': 'Success'}, status=status.HTTP_201_CREATED,)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors,status=400) 
 
-    def perform_create(self, serializer):
-        serializer.save()
-
+   
 
 @csrf_exempt
 @api_view(['GET','POST'])                                                                 #functionbased

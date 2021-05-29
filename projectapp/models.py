@@ -21,14 +21,11 @@ class Total_score(models.Model):
     first_round=models.IntegerField(blank=True,null=False)
     second_round=models.IntegerField(blank=True,null=False)
     third_round=models.IntegerField(blank=True,null=False)  
-    #cal_score=models.IntegerField()
+    scoring=models.IntegerField()
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)   
 
 
-    def total_score(self):
-        total = self.first_round + self.second_round + self.third_round
-        return total
-    calc_score = models.PositiveIntegerField(total_score) 
+    
 
     def __str__(self):
         return f"Score {self.first_round} - {self.second_round} - {self.third_round}"
