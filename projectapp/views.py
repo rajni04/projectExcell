@@ -13,7 +13,7 @@ from rest_framework.generics import (
     GenericAPIView,
     UpdateAPIView,
 )
-from projectapp.serializers import CandiadateSerializer,ScoreSerializer,RegisterUserSerializer,ProfileSerializer
+from projectapp.serializers import CandiadateSerializer,ScoreSerializer,RegisterUserSerializer,ProfileSerializer,ScoreListSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -46,7 +46,12 @@ class ScoreCreate(CreateAPIView):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors,status=400) 
 
-   
+class ScoreList(ListAPIView):
+    
+    serializer_class = ScoreListSerializer
+    def get_queryset(self):
+        return Total_score.objects.all()
+  
 
 @csrf_exempt
 @api_view(['GET','POST'])                                                                 #functionbased
@@ -138,3 +143,6 @@ class UserProfileUpdate(UpdateAPIView):
     #permission_classes = [IsAuthenticated]
     serializer_class = serializers.ProfileSerializer
     queryset = Profile.objects.all()
+
+
+

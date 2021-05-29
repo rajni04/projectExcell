@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate
 from rest_framework import exceptions
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-
+from django.db.models import Max,Avg
 
 class CandiadateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -71,6 +71,17 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         #user.save()
         return User.objects.create_user(**validated_data)
 
+class ScoreListSerializer(serializers.ModelSerializer):
+    maxscore = serializers.SerializerMethodField('get_maxscore')
+    # avgscore = serializers.SerializerMethodField('get_avgscore')
+    class Meta:
+        model = Total_score
+        fields = ['id', 'candidate','first_round','second_round','third_round','total','maxscore']
+    def get_maxscore(self,obj):
+        total_score=Total_score.objects.filter(candidate_id=obj.candidate)
+        maxscore=total_score.aggregate(Avg('first_round' or 'second_round' or 'third_round'), Max('first_round' or 'second_round' or 'third_round'))
+        return maxscore
+    
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
