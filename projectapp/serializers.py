@@ -13,9 +13,10 @@ class CandiadateSerializer(serializers.ModelSerializer):
 
 
 class ScoreSerializer(serializers.ModelSerializer):
+    total = serializers.SerializerMethodField('get_total')
     class Meta:
         model = Total_score
-        fields = ['id', 'first_round', 'second_round','third_round','scoring','candidate']
+        fields = ['id', 'first_round', 'second_round','third_round','scoring','candidate','total']
 
 
     def validate(self,data): 
@@ -26,6 +27,10 @@ class ScoreSerializer(serializers.ModelSerializer):
         if fr >= 10 or fr >= 10 or tr >= 10 :
             raise serializers.ValidationError("No shoud be less than 10")
         return data
+
+    def get_total(self,obj):
+        return obj.first_round + obj.second_round + obj.third_round
+
     def create(self,validated_data):
         return Total_score.objects.create(**validated_data)
 

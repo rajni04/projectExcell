@@ -15,7 +15,7 @@ class Candidate(models.Model):
     def __str__(self):
         return  {self.name} - {self.email}
 
-
+    
 
 class Total_score(models.Model):
     first_round=models.IntegerField(blank=True,null=False)
@@ -24,7 +24,9 @@ class Total_score(models.Model):
     scoring=models.IntegerField()
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)   
 
-
+    @property
+    def total(self):
+        return self.first_round + self.second_round + self.third_round
     
 
     def __str__(self):
